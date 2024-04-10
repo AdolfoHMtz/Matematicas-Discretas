@@ -23,7 +23,7 @@ function Navbar() {
   };
 
   return (
-    <AppBar position="fixed" sx={{ backgroundColor: '#333', color: '#fff', boxShadow: 'none' }}>
+    <AppBar position="static" sx={{ backgroundColor: '#333', color: '#fff', boxShadow: 'none' }}>
       <Toolbar>
       <Typography  marginLeft={3} letterSpacing={1} variant="h5" fontFamily="Roboto" component="div" sx={{ flexGrow: 1 }}>
           <CalculateIcon fontSize='small' sx={{ mr: 1 }} />
