@@ -3,26 +3,36 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 
 function RelacionBxB() {
   const [setB, setSetB] = useState('');
   const [matrixSize, setMatrixSize] = useState(0);
   const [matrix, setMatrix] = useState([]);
   const [relationPreview, setRelationPreview] = useState('');
+  const [transitive, setTransitive] = useState(false);
+  const [symmetric, setSymmetric] = useState(false);
+  const [antisymmetric, setAntisymmetric] = useState(false);
+  const [reflexive, setReflexive] = useState(false);
+  const [relationType, setRelationType] = useState('');
   const [inputDisabled, setInputDisabled] = useState(false);
+  const [showProperties, setShowProperties] = useState(false); 
 
   useEffect(() => {
     initializeMatrix();
   }, [matrixSize]);
 
+  useEffect(() => {
+    checkProperties();
+  }, [relationPreview]);
+
   const handleEnterSetB = () => {
-    // Verificar que el conjunto B no esté vacío
     if (setB.trim() === '') {
       alert('Por favor, ingrese el conjunto B antes de continuar.');
       return;
     }
 
-    // Verificar que no haya elementos repetidos en el conjunto B
     const elements = setB.trim().split(',').map(item => item.trim());
     const uniqueElements = new Set(elements);
     if (uniqueElements.size !== elements.length) {
@@ -63,6 +73,73 @@ function RelacionBxB() {
       }
     }
     setRelationPreview(`{${relation.trim()}}`);
+    setShowProperties(true);
+  };
+  
+  const checkProperties = () => {
+    const elements = setB.trim().split(',').map(item => item.trim());
+    const validIndices = elements.map((_, index) => index);
+    let isTransitive = true;
+    let isSymmetric = true;
+    let isAntisymmetric = true;
+    let isReflexive = true;
+
+    for (let i = 0; i < matrixSize; i++) {
+      for (let j = 0; j < matrixSize; j++) {
+        if (matrix[i][j] === 1) {
+          for (let k = 0; k < matrixSize; k++) {
+            if (matrix[j][k] === 1 && matrix[i][k] !== 1) {
+              isTransitive = false;
+              break;
+            }
+          }
+          if (!isTransitive) break;
+        }
+      }
+      if (!isTransitive) break;
+    }
+
+    for (let i = 0; i < matrixSize; i++) {
+      for (let j = 0; j < matrixSize; j++) {
+        if (matrix[i][j] !== matrix[j][i]) {
+          isSymmetric = false;
+          break;
+        }
+      }
+      if (!isSymmetric) break;
+    }
+
+    for (let i = 0; i < matrixSize; i++) {
+      for (let j = 0; j < matrixSize; j++) {
+        if (i !== j && matrix[i][j] === 1 && matrix[j][i] === 1) {
+          isAntisymmetric = false;
+          break;
+        }
+      }
+      if (!isAntisymmetric) break;
+    }
+
+    for (let i = 0; i < matrixSize; i++) {
+      if (matrix[i][i] !== 1) {
+        isReflexive = false;
+        break;
+      }
+    }
+
+    setTransitive(isTransitive);
+    setSymmetric(isSymmetric);
+    setAntisymmetric(isAntisymmetric);
+    setReflexive(isReflexive);
+
+    if (isTransitive && isSymmetric && isAntisymmetric && isReflexive) {
+      setRelationType('Es una relación de orden total.');
+    } else if (isTransitive && isSymmetric && isReflexive) {
+      setRelationType('Es una relación de equivalencia.');
+    } else if (isTransitive && isAntisymmetric && isReflexive) {
+      setRelationType('Es una relación de orden parcial.');
+    } else {
+      setRelationType('No es una relación de equivalencia ni de orden parcial.');
+    }
   };
 
   const handleReset = () => {
@@ -70,13 +147,19 @@ function RelacionBxB() {
     setMatrixSize(0);
     setMatrix([]);
     setRelationPreview('');
+    setTransitive(false);
+    setSymmetric(false);
+    setAntisymmetric(false);
+    setReflexive(false);
+    setRelationType('');
     setInputDisabled(false);
+    setShowProperties(false);
   };
 
   return (
     <Container maxWidth="sm" sx={{ mt: 4 }}>
       <Typography variant="h3" color="#333" align="center" gutterBottom>
-       Relación B x B
+        Relación B x B
       </Typography>
       <Typography variant="body1" align="center" sx={{ mt: 2 }}>
         Ingrese el conjunto B
@@ -106,7 +189,7 @@ function RelacionBxB() {
             Ingrese la relación entre los elementos del conjunto B (0 si no hay relación, 1 si hay relación)
           </Typography>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div   style={{ display: 'flex' }}>
+            <div style={{ display: 'flex' }}>
               {setB.split(',').map((element, index) => (
                 <Typography key={index} variant="body1" align="center" sx={{ minWidth: '24px', paddingLeft: '27px' }}>
                   {element.trim()}
@@ -119,7 +202,6 @@ function RelacionBxB() {
                   {setB.split(',')[rowIndex].trim()}
                 </Typography>
                 {row.map((col, colIndex) => (
-
                   <Button
                     key={colIndex}
                     variant={matrix[rowIndex][colIndex] === 1 ? 'contained' : 'outlined'}
@@ -135,9 +217,81 @@ function RelacionBxB() {
           <Button variant="contained" onClick={printRelation} fullWidth sx={{ mt: 2 }}>
             Imprimir Relación
           </Button>
-          <Typography variant="body1" align="center" sx={{ mt: 2 }}>
-            Vista Previa de la Relación: R: {relationPreview}
-          </Typography>
+          {showProperties && (
+            <>
+              <Typography variant="body1" align="center" sx={{ mt: 2 }}>
+                R: {relationPreview}
+              </Typography>
+              <Typography variant="h5" align="center" gutterBottom sx={{ mt: 2 }}>
+                Propiedades de la Relación:
+              </Typography>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+                <Card sx={{ minWidth: 150 }}>
+                  <CardContent>
+                    <Typography variant="h6" align="center" gutterBottom>
+                      ¿Es Transitiva?
+                    </Typography>
+                    <Typography variant="h6" align="center" color={transitive ? 'green' : 'error'}>
+                      {transitive ? 'Sí, es transitiva' : 'No es transitiva'}
+                    </Typography>
+                    <Typography variant="body2" align="center">
+                      Una relación R es transitiva si para cada par ordenado (a, b) y (b, c) en R, también está presente
+                      (a, c).
+                    </Typography>
+                  </CardContent>
+                </Card>
+                <Card sx={{ minWidth: 150 }}>
+                  <CardContent>
+                    <Typography variant="h6" align="center" gutterBottom>
+                      ¿Es Simétrica?
+                    </Typography>
+                    <Typography variant="h6" align="center" color={symmetric ? 'green' : 'error'}>
+                      {symmetric ? 'Sí, es simétrica' : 'No es simétrica'}
+                    </Typography>
+                    <Typography variant="body2" align="center">
+                      Una relación R es simétrica si para cada par ordenado (a, b) en R, también está presente (b, a).
+                    </Typography>
+                  </CardContent>
+                </Card>
+                <Card sx={{ minWidth: 150 }}>
+                  <CardContent>
+                    <Typography variant="h6" align="center" gutterBottom>
+                      ¿Es Antisimétrica?
+                    </Typography>
+                    <Typography variant="h6" align="center" color={antisymmetric ? 'green' : 'error'}>
+                      {antisymmetric ? 'Sí, es antisimétrica' : 'No es antisimétrica'}
+                    </Typography>
+                    <Typography variant="body2" align="center">
+                      Una relación R es antisimétrica si para cada par ordenado (a, b) y (b, a) en R, entonces a = b.
+                    </Typography>
+                  </CardContent>
+                </Card>
+                <Card sx={{ minWidth: 150 }}>
+                  <CardContent>
+                    <Typography variant="h6" align="center" gutterBottom>
+                      ¿Es Reflexiva?
+                    </Typography>
+                    <Typography variant="h6" align="center" color={reflexive ? 'green' : 'error'}>
+                      {reflexive ? 'Sí, es reflexiva' : 'No es reflexiva'}
+                    </Typography>
+                    <Typography variant="body2" align="center">
+                      Una relación R es reflexiva si para cada elemento a en el conjunto B, (a, a) está presente en R.
+                    </Typography>
+                  </CardContent>
+                </Card>
+                <Card sx={{ minWidth: 150 }}>
+                  <CardContent>
+                    <Typography variant="h6" align="center" gutterBottom>
+                      ¿Qué tipo de relación es?
+                    </Typography>
+                    <Typography variant="h6" color={"blue"} align="center">
+                      {relationType}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </div>
+            </>
+          )}
         </div>
       )}
     </Container>

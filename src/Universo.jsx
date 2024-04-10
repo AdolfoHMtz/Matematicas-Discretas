@@ -3,6 +3,9 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Grid from '@mui/material/Grid';
 
 function Universo() {
   const [universe, setUniverse] = useState('');
@@ -64,7 +67,7 @@ function Universo() {
   return (
     <Container maxWidth="sm" sx={{ mt: 4 }}>
       <Typography variant="h3" color="#333" align="center" gutterBottom>
-       Universo de Conjuntos
+        Universo de Conjuntos
       </Typography>
       <TextField
         id="universe"
@@ -118,7 +121,7 @@ function Universo() {
           {previewVisible && (
             <div style={{ textAlign: 'center', marginTop: '20px' }}>
               <Typography variant="body1">
-              U: {`{${[...universeSet].join(', ')}}`}
+                U: {`{${[...universeSet].join(', ')}}`}
               </Typography>
               <Typography variant="body1">
                 A: {`{${setA}}`}
@@ -133,6 +136,98 @@ function Universo() {
                 Reiniciar
               </Button>
             </div>
+          )}
+          {previewVisible && (
+            <Grid container spacing={2} sx={{ marginTop: '20px' }}>
+              <Grid item xs={12} md={6}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="body1" align="center" gutterBottom>
+                      Región 1: A ∩ B ∩ C
+                    </Typography>
+                    <Typography variant="body1" align="center">
+                      {Array.from(universeSet).filter(item => setA.includes(item) && setB.includes(item) && setC.includes(item)).join(', ')}
+                    </Typography>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent>
+                    <Typography variant="body1" align="center" gutterBottom>
+                      Región 2: A ∩ B 
+                    </Typography>
+                    <Typography variant="body1" align="center">
+                      {Array.from(universeSet).filter(item => setA.includes(item) && setB.includes(item) && !setC.includes(item)).join(', ')}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="body1" align="center" gutterBottom>
+                      Región 3: A ∩ C
+                    </Typography>
+                    <Typography variant="body1" align="center">
+                      {Array.from(universeSet).filter(item => setA.includes(item) && !setB.includes(item) && setC.includes(item)).join(', ')}
+                    </Typography>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent>
+                    <Typography variant="body1" align="center" gutterBottom>
+                      Región 4: B ∩ C
+                    </Typography>
+                    <Typography variant="body1" align="center">
+                      {Array.from(universeSet).filter(item => !setA.includes(item) && setB.includes(item) && setC.includes(item)).join(', ')}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="body1" align="center" gutterBottom>
+                      Región 5: B U C
+                    </Typography>
+                    <Typography variant="body1" align="center">
+                      {Array.from(universeSet).filter(item => setA.includes(item) && !setB.includes(item) && !setC.includes(item)).join(', ')}
+                    </Typography>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent>
+                    <Typography variant="body1" align="center" gutterBottom>
+                      Región 6: A U C
+                    </Typography>
+                    <Typography variant="body1" align="center">
+                      {Array.from(universeSet).filter(item => !setA.includes(item) && setB.includes(item) && !setC.includes(item)).join(', ')}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="body1" align="center" gutterBottom>
+                      Región 7: A U B
+                    </Typography>
+                    <Typography variant="body1" align="center">
+                      {Array.from(universeSet).filter(item => !setA.includes(item) && !setB.includes(item) && setC.includes(item)).join(', ')}
+                    </Typography>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent>
+                    <Typography variant="body1" align="center" gutterBottom>
+                      Región 8: U
+                    </Typography>
+                    <Typography variant="body1" align="center">
+                      {Array.from(universeSet).filter(item => !setA.includes(item) && !setB.includes(item) && !setC.includes(item)).join(', ')}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
           )}
         </>
       )}
