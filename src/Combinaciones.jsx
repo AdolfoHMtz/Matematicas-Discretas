@@ -153,14 +153,10 @@ function Combinaciones() {
       )}
   
 
-      <h3 align= "center" > En construcción....</h3 >
+      <h3 align= "center" > En construcción...</h3 >
       <img src="https://pbs.twimg.com/media/ChFN_m1VEAEp8af.jpg" alt="a" />
     </Container>
      
-
-
-
-
   );
 }
 
