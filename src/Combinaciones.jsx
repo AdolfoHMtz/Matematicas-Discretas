@@ -120,11 +120,11 @@ function Combinaciones() {
         />
       </Box>
       <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-        <Button variant="contained" onClick={generarCombinaciones} sx={{ mr: 1 }}>
-          Generar Combinaciones
+        <Button variant="contained" onClick={generarCombinaciones} sx={{ mr: 1 , backgroundColor:"#333" }}>
+          Combinaciones
         </Button>
-        <Button variant="contained" onClick={generarPermutaciones}>
-          Generar Permutaciones
+        <Button variant="contained" onClick={generarPermutaciones} sx={{ mr: 1,  backgroundColor:"#333"}}>
+          Permutaciones
         </Button>
       </Box>
       {combinaciones.length > 0 && (
@@ -151,10 +151,12 @@ function Combinaciones() {
           </Typography>
         </Box>
       )}
-  
-
-      <h3 align= "center" > En construcción...</h3 >
-      <img src="https://pbs.twimg.com/media/ChFN_m1VEAEp8af.jpg" alt="a" />
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+        <Typography variant="h3" align="center" gutterBottom>
+          En construcción...
+        </Typography>
+        <img src="https://pbs.twimg.com/media/ChFN_m1VEAEp8af.jpg" alt="a" style={{ maxWidth: '100%', height: 'auto' }} />
+      </Box>
     </Container>
      
   );

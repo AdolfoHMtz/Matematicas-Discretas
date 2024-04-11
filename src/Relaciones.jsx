@@ -43,7 +43,10 @@ function Relaciones() {
       {selectedOption === 'AXB' && <RelacionAxB />}
       {selectedOption === 'AXA' && <RelacionAxA />}
       {selectedOption === 'BXB' && <RelacionBxB />}
+      <p></p>
+
     </Container>
+
   );
 }
 
