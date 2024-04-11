@@ -152,10 +152,10 @@ function Combinaciones() {
         </Box>
       )}
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-        <Typography variant="h3" align="center" gutterBottom>
+        <Typography variant="h6" align="center" gutterBottom>
           En construcción...
         </Typography>
-        <img src="https://pbs.twimg.com/media/ChFN_m1VEAEp8af.jpg" alt="a" style={{ maxWidth: '100%', height: 'auto' }} />
+        <img src="https://pbs.twimg.com/media/ChFN_m1VEAEp8af.jpg" alt="a" style={{ maxWidth: '50%', height: 'auto' }} />
       </Box>
     </Container>
      
