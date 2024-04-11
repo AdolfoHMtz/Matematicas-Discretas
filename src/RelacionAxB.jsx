@@ -17,9 +17,9 @@ function RelacionAxB() {
   const [isInjective, setIsInjective] = useState('');
   const [isSurjective, setIsSurjective] = useState('');
   const [isBijective, setIsBijective] = useState('');
+  const [setsEntered, setSetsEntered] = useState(false);
 
   const handleEnterSets = () => {
-    // Verificar que los conjuntos no estén vacíos y no terminen en coma
     if (setA.trim() === '' || setB.trim() === '') {
       alert('Por favor, llene ambos conjuntos antes de continuar.');
       return;
@@ -28,18 +28,29 @@ function RelacionAxB() {
       alert('Por favor, elimine la coma al final de los conjuntos.');
       return;
     }
-
-    // Validar si los conjuntos contienen elementos únicos
     if (!validateSets(setA) || !validateSets(setB)) {
       alert('Por favor, ingrese elementos únicos en los conjuntos.');
       return;
     }
-
     setPreviewVisible(true);
+    setSetsEntered(true);
+  };
+
+  const handleDeleteSets = () => {
+    setSetA('');
+    setSetB('');
+    setRelation('');
+    setPreviewVisible(false);
+    setRelationPreview('');
+    setShowProperties(false);
+    setIsFunction('');
+    setIsInjective('');
+    setIsSurjective('');
+    setIsBijective('');
+    setSetsEntered(false);
   };
 
   const handleEnterRelation = () => {
-    // Validar si la relación está ingresada y si se cumple la restricción de relación entre los conjuntos A y B
     if (relation.trim() === '') {
       alert('Por favor, ingrese la relación antes de continuar.');
       return;
@@ -53,9 +64,8 @@ function RelacionAxB() {
         return;
       }
     }
-    // Mostrar el preview de la relación
+
     setRelationPreview(`R={${relation}}`);
-    // Calcular propiedades de la relación
     calculateProperties();
   };
 
@@ -77,7 +87,6 @@ function RelacionAxB() {
       codomainElements.push(elementB);
     }
 
-    // Check for multiple mappings for any element in the domain
     const domainSet = new Set(domainElements);
     const codomainSet = new Set(codomainElements);
 
@@ -115,7 +124,6 @@ function RelacionAxB() {
       setIsBijective(explanation);
     }
 
-    // Check if the relation is injective
     const codomainSetArray = Array.from(codomainSet);
     const mappedDomainSet = domainElements.map((element) => {
       const mappedElements = pairs.filter((pair) => pair.startsWith(`(${element},`));
@@ -134,19 +142,17 @@ function RelacionAxB() {
 
     setIsInjective(isInjective ? 'Sí' : 'No');
 
-    // Check if the relation is surjective
     const isSurjective = codomainSet.size === codomainElements.length;
 
     setIsSurjective(isSurjective ? 'Sí' : 'No');
 
-    // Check if the relation is bijective
     setIsBijective(isInjective && isSurjective ? 'Sí' : 'No');
 
     setShowProperties(true);
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 4 }}>
+    <Container maxWidth="sm" sx={{ mt: 3 }}>
       <Typography variant="h3" color="#333" align="center" gutterBottom>
         Relación A x B
       </Typography>
@@ -173,15 +179,17 @@ function RelacionAxB() {
           disabled={previewVisible}
         />
       </div>
-      <Button variant="contained" onClick={handleEnterSets} fullWidth sx={{ mt: 2 }} disabled={previewVisible}>
-        Ingresar Conjuntos
-      </Button>
+      {setsEntered ? (
+        <Button variant="contained" onClick={handleDeleteSets} fullWidth sx={{ mt: 2 }}>
+          Eliminar
+        </Button>
+      ) : (
+        <Button variant="contained" onClick={handleEnterSets} fullWidth sx={{ mt: 2, backgroundColor:"#333" }}>
+          Ingresar Conjuntos
+        </Button>
+      )}
       {previewVisible && (
-        <div style={{ textAlign: 'center', marginTop: '20px' }}>
-          {/* Aquí mostrar la vista previa de los datos */}
-          <Typography variant="body1">
-            Vista Previa:
-          </Typography>
+        <div style={{ textAlign: 'center', marginTop: '10px' }}>
           <Typography variant="body1">
             Conjunto A: {`{${setA}}`}
           </Typography>
@@ -189,7 +197,7 @@ function RelacionAxB() {
             Conjunto B: {`{${setB}}`}
           </Typography>
           <Typography variant="body1" sx={{ mt: 2 }}>
-            Para ingresar la relación entre el conjunto A y B, ingresa uno por uno cada elemento de la relación
+            Para ingresar la relación entre el conjunto A y B, ingresa los elementos de la relación
             usando la estructura (a,b) separando cada par con espacios. Ejemplo: (a,b) (b,c) (c,d).
           </Typography>
           <TextField
@@ -215,7 +223,7 @@ function RelacionAxB() {
       )}
       {showProperties && (
         <div style={{ textAlign: 'center', marginTop: '20px' }}>
-          <Typography variant="h5" color="primary" gutterBottom>
+          <Typography variant="h5" color="#333" gutterBottom>
             Propiedades de la Relación
           </Typography>
           <Card sx={{ mt: 2 }}>
@@ -223,11 +231,11 @@ function RelacionAxB() {
               <Typography variant="h6" color="primary" gutterBottom>
                 ¿R es una función?
               </Typography>
-              <Typography variant="body1" color={isFunction === 'Es una función' ? 'success' : 'error'}>
+              <Typography variant="h6" color={isFunction === 'Es una función' ? 'green' : 'red'}>
                 {isFunction}
               </Typography>
               {isFunction === 'Es una función' ? (
-                <Typography variant="body1" color="success">
+                <Typography variant="body2" color="success">
                   La relación es una función porque cada elemento del conjunto A está relacionado con exactamente un elemento del conjunto B.
                 </Typography>
               ) : (
@@ -242,7 +250,7 @@ function RelacionAxB() {
               <Typography variant="h6" color="primary" gutterBottom>
                 ¿R es inyectiva?
               </Typography>
-              <Typography variant="body1" color={isInjective === 'Sí' ? 'success' : 'error'}>
+              <Typography variant="h6" color={isInjective === 'Sí' ? 'green' : 'red' }>
                 {isInjective}
               </Typography>
               {isInjective === 'Sí' ? (
@@ -261,7 +269,7 @@ function RelacionAxB() {
               <Typography variant="h6" color="primary" gutterBottom>
                 ¿R es sobreyectiva?
               </Typography>
-              <Typography variant="body1" color={isSurjective === 'Sí' ? 'success' : 'error'}>
+              <Typography variant="h6" color={isSurjective === 'Sí' ? 'green' : 'red' }>
                 {isSurjective}
               </Typography>
               {isSurjective === 'Sí' ? (
@@ -280,7 +288,7 @@ function RelacionAxB() {
               <Typography variant="h6" color="primary" gutterBottom>
                 ¿R es biyectiva?
               </Typography>
-              <Typography variant="body1" color={isBijective === 'Sí' ? 'success' : 'error'}>
+              <Typography variant="h6" color={isBijective === 'Sí' ? 'green' : 'red' }>
                 {isBijective}
               </Typography>
               {isBijective === 'Sí' ? (
@@ -299,4 +307,5 @@ function RelacionAxB() {
     </Container>
   );
 }
+
 export default RelacionAxB;

@@ -4,13 +4,13 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
+import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import CalculateIcon from '@mui/icons-material/Calculate';
 import { Link } from 'react-router-dom';
 
 function Navbar() {
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -23,10 +23,9 @@ function Navbar() {
   };
 
   return (
-    <AppBar position="fixed" sx={{ backgroundColor: '#333', color: '#fff', boxShadow: 'none' }}>
+    <AppBar position="static" sx={{ backgroundColor: '#333', color: '#fff' }}>
       <Toolbar>
-      <Typography  marginLeft={3} letterSpacing={1} variant="h5" fontFamily="Roboto" component="div" sx={{ flexGrow: 1 }}>
-          <CalculateIcon fontSize='small' sx={{ mr: 1 }} />
+      <Typography  marginLeft={2} letterSpacing={1} variant="h5" fontFamily="Roboto" component="div" sx={{ flexGrow: 1 }}>
           Matemáticas Discretas
         </Typography>
         <div>
@@ -38,9 +37,9 @@ function Navbar() {
             aria-haspopup="true"
             onClick={handleMenu}
             color="inherit"
-            sx={{ '&:hover': { backgroundColor: 'transparent' } }}
+            sx={{ '&:hover': { backgroundColor: 'white' } }}
           >
-            <MenuIcon />
+            <MenuOpenIcon />
           </IconButton>
           <Menu
             id="menu-appbar"

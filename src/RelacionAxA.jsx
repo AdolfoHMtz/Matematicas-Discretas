@@ -164,7 +164,7 @@ function RelacionAxA() {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 4 }}>
+    <Container maxWidth="sm" sx={{ mt: 3 }}>
       <Typography variant="h3" color="#333" align="center" gutterBottom>
         Relación A x A
       </Typography>
@@ -181,7 +181,7 @@ function RelacionAxA() {
         disabled={inputDisabled}
       />
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-        <Button variant="contained" onClick={handleEnterSetA} sx={{ flex: '1' }} disabled={inputDisabled}>
+        <Button variant="contained" onClick={handleEnterSetA} sx={{ flex: '1', backgroundColor:"#333" }} disabled={inputDisabled}>
           Ingresar Conjunto A
         </Button>
         {inputDisabled && (
@@ -205,7 +205,7 @@ function RelacionAxA() {
             </div>
             {matrix.map((row, rowIndex) => (
               <div key={rowIndex} style={{ display: 'flex', marginBottom: '5px' }}>
-                <Typography variant="body1" align="center" sx={{ minWidth: '24px', padding: '5px' }}>
+                <Typography variant="body1" align="center" sx={{ minWidth: '26px', padding: '5px' }}>
                   {setA.split(',')[rowIndex].trim()}
                 </Typography>
                 {row.map((col, colIndex) => (
@@ -213,7 +213,7 @@ function RelacionAxA() {
                     key={colIndex}
                     variant={matrix[rowIndex][colIndex] === 1 ? 'contained' : 'outlined'}
                     onClick={() => handleMatrixInputChange(rowIndex, colIndex)}
-                    style={{ margin: '2px', minWidth: '24px', width: '24px' }}
+                    style={{ margin: '2px', minWidth: '24px', width: '24px', backgroundColor: matrix[rowIndex][colIndex] === 1 ? '#333' : 'white'}}
                   >
                     {matrix[rowIndex][colIndex]}
                   </Button>
@@ -221,7 +221,7 @@ function RelacionAxA() {
               </div>
             ))}
           </div>
-          <Button variant="contained" onClick={printRelation} fullWidth sx={{ mt: 2 }}>
+          <Button variant="contained" onClick={printRelation} fullWidth sx={{ mt: 2, backgroundColor:"primary"}}>
             Imprimir Relación
           </Button>
           {showProperties && ( // Mostrar las propiedades solo si showProperties es verdadero
@@ -229,7 +229,7 @@ function RelacionAxA() {
               <Typography variant="body1" align="center" sx={{ mt: 2 }}>
               R: {relationPreview}
               </Typography>
-              <Typography variant="h5" align="center" gutterBottom sx={{ mt: 2 }}>
+              <Typography variant="h5" align="center" gutterBottom sx={{ mt: 1 }}>
                 Propiedades de la Relación:
               </Typography>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>

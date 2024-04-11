@@ -157,7 +157,7 @@ function RelacionBxB() {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 4 }}>
+    <Container maxWidth="sm" sx={{ mt: 3 }}>
       <Typography variant="h3" color="#333" align="center" gutterBottom>
         Relación B x B
       </Typography>
@@ -173,8 +173,8 @@ function RelacionBxB() {
         sx={{ mt: 2 }}
         disabled={inputDisabled}
       />
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-        <Button variant="contained" onClick={handleEnterSetB} sx={{ flex: '1' }} disabled={inputDisabled}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px'}}>
+        <Button variant="contained" onClick={handleEnterSetB} sx={{ flex: '1', backgroundColor:"#333"}} disabled={inputDisabled}>
           Ingresar Conjunto B
         </Button>
         {inputDisabled && (
@@ -188,7 +188,7 @@ function RelacionBxB() {
           <Typography variant="body1" align="center" sx={{ mt: 2 }}>
             Ingrese la relación entre los elementos del conjunto B (0 si no hay relación, 1 si hay relación)
           </Typography>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }} >
             <div style={{ display: 'flex' }}>
               {setB.split(',').map((element, index) => (
                 <Typography key={index} variant="body1" align="center" sx={{ minWidth: '24px', paddingLeft: '27px' }}>
@@ -206,7 +206,7 @@ function RelacionBxB() {
                     key={colIndex}
                     variant={matrix[rowIndex][colIndex] === 1 ? 'contained' : 'outlined'}
                     onClick={() => handleMatrixInputChange(rowIndex, colIndex)}
-                    style={{ margin: '2px', minWidth: '24px', width: '24px' }}
+                    style={{ margin: '2px', minWidth: '24px', width: '24px', backgroundColor: matrix[rowIndex][colIndex] === 1 ? '#333' : 'white'}}
                   >
                     {matrix[rowIndex][colIndex]}
                   </Button>
@@ -222,7 +222,7 @@ function RelacionBxB() {
               <Typography variant="body1" align="center" sx={{ mt: 2 }}>
                 R: {relationPreview}
               </Typography>
-              <Typography variant="h5" align="center" gutterBottom sx={{ mt: 2 }}>
+              <Typography variant="h5" align="center" gutterBottom sx={{ mt: 1 }}>
                 Propiedades de la Relación:
               </Typography>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
