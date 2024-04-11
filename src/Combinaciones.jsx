@@ -95,7 +95,7 @@ function Combinaciones() {
 
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
-      <Typography variant="h3" color="textPrimary" align="center" gutterBottom>
+      <Typography variant="h4" color="textPrimary" align="center" gutterBottom>
         Combinaciones y Permutaciones
       </Typography>
       <Typography variant="body1" color="textSecondary" align="center" gutterBottom>
