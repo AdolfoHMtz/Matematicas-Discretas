@@ -1,4 +1,3 @@
-// Navbar.jsx
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -10,10 +9,9 @@ import Menu from '@mui/material/Menu';
 import { Link } from 'react-router-dom';
 
 function Navbar() {
-
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-
+  
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };

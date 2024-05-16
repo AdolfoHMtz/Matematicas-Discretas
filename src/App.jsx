@@ -23,7 +23,6 @@ function App() {
         <Route path="/Relaciones" element={<Relaciones/>} />
         <Route path="/Aritmetica" element={<Aritmetica/>} />
         <Route path="/Grafos" element={<Grafos/>} />
-
       </Routes>
       <Footer />
     </Router>

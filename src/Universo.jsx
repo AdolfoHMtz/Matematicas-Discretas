@@ -241,7 +241,7 @@ function Universo() {
                 </Card>
               </Grid>
               <Grid item xs={12} md={12}>
-              <img src="src/DiagramaVemnn.png" alt="Diagrama" style={{  paddingLeft:"10px", maxWidth: '100%', height: 'auto' }} />
+              <img src="https://i.ibb.co/3C3xyQZ/Diagrama-Vemnn.png" alt="Diagrama" style={{  paddingLeft:"10px", maxWidth: '100%', height: 'auto' }} />
               </Grid>  
 
               </Grid> 
