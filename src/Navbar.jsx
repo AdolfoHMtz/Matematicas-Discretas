@@ -58,8 +58,10 @@ function Navbar() {
           >
             <MenuItem component={Link} to="/" onClick={handleClose}>Conjuntos</MenuItem>
             <MenuItem component={Link} to="/Universo" onClick={handleClose}>Universo</MenuItem>
-            <MenuItem component={Link} to="/Relaciones" onClick={handleClose}>Relaciones</MenuItem>
             <MenuItem component={Link} to="/Combinaciones" onClick={handleClose}>Combinaciones y permutaciones</MenuItem>
+            <MenuItem component={Link} to="/Relaciones" onClick={handleClose}>Relaciones</MenuItem>
+            <MenuItem component={Link} to="/Aritmetica" onClick={handleClose}>Aritmetica Modular</MenuItem>
+            <MenuItem component={Link} to="/Grafos" onClick={handleClose}>Grafos</MenuItem>
           </Menu>
         </div>
       </Toolbar>

@@ -76,60 +76,39 @@ function RelacionAxB() {
   };
 
   const calculateProperties = () => {
+    // Obtener los elementos únicos de los conjuntos A y B
+    const setAElements = new Set(setA.trim().split(',').map(item => item.trim()));
+    const setBElements = new Set(setB.trim().split(',').map(item => item.trim()));
+  
+    // Calcular propiedades
     const pairs = relation.trim().split(/\s+/);
     const domainElements = [];
     const codomainElements = [];
-    let isFunction = true;
-
+  
     for (const pair of pairs) {
       const [elementA, elementB] = pair.substring(1, pair.length - 1).split(',');
       domainElements.push(elementA);
       codomainElements.push(elementB);
     }
-
+  
     const domainSet = new Set(domainElements);
     const codomainSet = new Set(codomainElements);
-
+  
+    let isFunction = true;
+  
     if (domainElements.length !== domainSet.size || codomainElements.length !== codomainSet.size) {
       isFunction = false;
     }
-
+  
     setIsFunction(isFunction ? 'Es una función' : 'No es una función');
-
-    if (isFunction) {
-      setIsInjective('Sí');
-      setIsSurjective('Sí');
-
-      const explanation = (
-        <div>
-          <Typography variant="body1">
-            La relación es una función porque cada elemento del conjunto A está relacionado con exactamente un elemento del conjunto B.
-          </Typography>
-        </div>
-      );
-
-      setIsBijective(explanation);
-    } else {
-      setIsInjective('No');
-      setIsSurjective('No');
-
-      const explanation = (
-        <div>
-          <Typography variant="body1">
-            La relación no es una función porque hay al menos un elemento en el conjunto A que está relacionado con más de un elemento del conjunto B.
-          </Typography>
-        </div>
-      );
-
-      setIsBijective(explanation);
-    }
-
+  
+    // Verificar si es inyectiva
     const codomainSetArray = Array.from(codomainSet);
     const mappedDomainSet = domainElements.map((element) => {
       const mappedElements = pairs.filter((pair) => pair.startsWith(`(${element},`));
       return mappedElements.map((pair) => pair.substring(1, pair.length - 1).split(',')[1]);
     });
-
+  
     const isInjective = mappedDomainSet.every((mappedElement, index) => {
       const occurrences = mappedElement.reduce((count, current) => {
         if (current === codomainSetArray[index]) {
@@ -139,17 +118,19 @@ function RelacionAxB() {
       }, 0);
       return occurrences === 1;
     });
-
+  
     setIsInjective(isInjective ? 'Sí' : 'No');
-
-    const isSurjective = codomainSet.size === codomainElements.length;
-
+  
+    // Verificar si es sobreyectiva
+    const uniqueImages = new Set(pairs.map(pair => pair.split(',')[1]));
+    const isSurjective = codomainSet.size === uniqueImages.size;
+  
     setIsSurjective(isSurjective ? 'Sí' : 'No');
-
+  
     setIsBijective(isInjective && isSurjective ? 'Sí' : 'No');
-
     setShowProperties(true);
   };
+  
 
   return (
     <Container maxWidth="sm" sx={{ mt: 3 }}>

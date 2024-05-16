@@ -139,7 +139,7 @@ function RelacionAxA() {
 
     // Determine Relation Type
     if (isTransitive && isSymmetric && isAntisymmetric && isReflexive) {
-      setRelationType('Es una relación de orden total.');
+      setRelationType('Es una relación de equivalencia y de orden total.');
     } else if (isTransitive && isSymmetric && isReflexive) {
       setRelationType('Es una relación de equivalencia.');
     } else if (isTransitive && isAntisymmetric && isReflexive) {

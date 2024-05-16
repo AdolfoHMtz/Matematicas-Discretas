@@ -78,17 +78,26 @@ function Operaciones() {
   };
 
   const calcularComposicion = (relacion1, relacion2) => {
-    const composicion = [];
+    const composicion = new Set(); // Usamos un Set para garantizar elementos únicos
+
+    // Recorremos todos los pares de la relación 1
     relacion1.forEach(parR1 => {
+      // Extraemos los valores de cada par ordenado
       const [a, b] = parR1.substring(1, parR1.length - 1).split(',');
+      // Por cada par en la relación 1, recorremos los pares de la relación 2
       relacion2.forEach(parR2 => {
+        // Extraemos los valores del par de la relación 2
         const [c, d] = parR2.substring(1, parR2.length - 1).split(',');
+        // Si el segundo valor de la relación 1 coincide con el primer valor de la relación 2
+        // Añadimos el nuevo par (a, d) a la composición
         if (b === c) {
-          composicion.push(`(${a},${d})`);
+          composicion.add(`(${a},${d})`);
         }
       });
     });
-    return composicion;
+
+    // Convertimos el Set de composiciones únicas en un array y lo retornamos
+    return [...composicion];
   };
 
   return (

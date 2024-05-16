@@ -155,7 +155,7 @@ function Universo() {
                 <Card>
                   <CardContent>
                     <Typography variant="body2" align="center" gutterBottom>
-                      Región 2: A ∩ B 
+                      Región 2: A ∩ B / C
                     </Typography>
                     <Typography variant="body2" align="center">
                       {Array.from(universeSet).filter(item => setA.includes(item) && setB.includes(item) && !setC.includes(item)).length > 0 ? `{${Array.from(universeSet).filter(item => setA.includes(item) && setB.includes(item) && !setC.includes(item)).join(', ')}}` : '{}'}
@@ -163,23 +163,28 @@ function Universo() {
                   </CardContent>
                 </Card>
               </Grid>
+
               <Grid item xs={12} md={12}>
+
                 <Card>
                   <CardContent>
+
                     <Typography variant="body2" align="center" gutterBottom>
-                      Región 3: A ∩ C
+                      Región 3: A ∩ C / B
                     </Typography>
                     <Typography variant="body2" align="center">
                       {Array.from(universeSet).filter(item => setA.includes(item) && !setB.includes(item) && setC.includes(item)).length > 0 ? `{${Array.from(universeSet).filter(item => setA.includes(item) && !setB.includes(item) && setC.includes(item)).join(', ')}}` : '{}'}
                     </Typography>
                   </CardContent>
                 </Card>
+
+
               </Grid>
               <Grid item xs={12} md={12}>
                 <Card>
                   <CardContent>
                     <Typography variant="body2" align="center" gutterBottom>
-                      Región 4: B ∩ C
+                      Región 4: B ∩ C / A
                     </Typography>
                     <Typography variant="body2" align="center">
                       {Array.from(universeSet).filter(item => !setA.includes(item) && setB.includes(item) && setC.includes(item)).length > 0 ? `{${Array.from(universeSet).filter(item => !setA.includes(item) && setB.includes(item) && setC.includes(item)).join(', ')}}` : '{}'}
@@ -191,7 +196,7 @@ function Universo() {
                 <Card>
                   <CardContent>
                     <Typography variant="body2" align="center" gutterBottom>
-                      Región 5: B U C
+                      Región 5: A
                     </Typography>
                     <Typography variant="body2" align="center">
                       {Array.from(universeSet).filter(item => setA.includes(item) && !setB.includes(item) && !setC.includes(item)).length > 0 ? `{${Array.from(universeSet).filter(item => setA.includes(item) && !setB.includes(item) && !setC.includes(item)).join(', ')}}` : '{}'}
@@ -203,7 +208,7 @@ function Universo() {
                 <Card>
                   <CardContent>
                     <Typography variant="body2" align="center" gutterBottom>
-                      Región 6: A U C
+                      Región 6: B
                     </Typography>
                     <Typography variant="body2" align="center">
                       {Array.from(universeSet).filter(item => !setA.includes(item) && setB.includes(item) && !setC.includes(item)).length > 0 ? `{${Array.from(universeSet).filter(item => !setA.includes(item) && setB.includes(item) && !setC.includes(item)).join(', ')}}` : '{}'}
@@ -215,7 +220,7 @@ function Universo() {
                 <Card>
                   <CardContent>
                     <Typography variant="body2" align="center" gutterBottom>
-                      Región 7: A U B
+                      Región 7: C
                     </Typography>
                     <Typography variant="body2" align="center">
                       {Array.from(universeSet).filter(item => !setA.includes(item) && !setB.includes(item) && setC.includes(item)).length > 0 ? `{${Array.from(universeSet).filter(item => !setA.includes(item) && !setB.includes(item) && setC.includes(item)).join(', ')}}` : '{}'}
@@ -235,12 +240,16 @@ function Universo() {
                   </CardContent>
                 </Card>
               </Grid>
-            </Grid>
-          )}
+              <Grid item xs={12} md={12}>
+              <img src="src/DiagramaVemnn.png" alt="Diagrama" style={{  paddingLeft:"10px", maxWidth: '100%', height: 'auto' }} />
+              </Grid>  
+
+              </Grid> 
+          )} 
         </>
       )}
+
     </Container>
   );
 }
-
 export default Universo;

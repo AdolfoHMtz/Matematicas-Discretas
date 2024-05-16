@@ -4,6 +4,8 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 
 function Combinaciones() {
   const [elementos, setElementos] = useState('');
@@ -11,6 +13,7 @@ function Combinaciones() {
   const [combinaciones, setCombinaciones] = useState([]);
   const [permutaciones, setPermutaciones] = useState([]);
 
+  // Función para generar combinaciones
   const generarCombinaciones = () => {
     // Validar las entradas de usuario
     if (!elementos.trim() || !cantidad.trim()) {
@@ -18,19 +21,22 @@ function Combinaciones() {
       return;
     }
 
+    // Convertir los elementos ingresados en un array y eliminar los espacios en blanco
     const elementosArray = elementos.split(',').map(item => item.trim());
     const cantidadNum = parseInt(cantidad);
 
+    // Validar la cantidad ingresada
     if (isNaN(cantidadNum) || cantidadNum <= 0 || cantidadNum > elementosArray.length) {
       alert('La cantidad debe ser un número válido dentro del rango de los elementos.');
       return;
     }
 
     // Generar combinaciones
-    const combinacionesResult = generateCombinations(elementosArray, cantidadNum);
+    const combinacionesResult = generarCombinacionesHelper(elementosArray, cantidadNum);
     setCombinaciones(combinacionesResult);
   };
 
+  // Función para generar permutaciones
   const generarPermutaciones = () => {
     // Validar las entradas de usuario
     if (!elementos.trim() || !cantidad.trim()) {
@@ -38,51 +44,57 @@ function Combinaciones() {
       return;
     }
 
+    // Convertir los elementos ingresados en un array y eliminar los espacios en blanco
     const elementosArray = elementos.split(',').map(item => item.trim());
     const cantidadNum = parseInt(cantidad);
 
+    // Validar la cantidad ingresada
     if (isNaN(cantidadNum) || cantidadNum <= 0 || cantidadNum > elementosArray.length) {
       alert('La cantidad debe ser un número válido dentro del rango de los elementos.');
       return;
     }
 
     // Generar permutaciones
-    const permutacionesResult = generatePermutations(elementosArray, cantidadNum);
+    const permutacionesResult = generarPermutacionesHelper(elementosArray, cantidadNum);
     setPermutaciones(permutacionesResult);
   };
 
-  const generateCombinations = (elements, k) => {
-    const combinations = [];
+  // Función para generar combinaciones (algoritmo de combinación)
+  const generarCombinacionesHelper = (elementos, k) => {
+    const combinaciones = [];
 
+    // Función recursiva para encontrar las combinaciones
     const backtrack = (start = 0, current = []) => {
       if (current.length === k) {
-        combinations.push([...current]);
+        combinaciones.push([...current]);
         return;
       }
 
-      for (let i = start; i < elements.length; i++) {
-        current.push(elements[i]);
+      for (let i = start; i < elementos.length; i++) {
+        current.push(elementos[i]);
         backtrack(i + 1, current);
         current.pop();
       }
     };
 
     backtrack();
-    return combinations;
+    return combinaciones;
   };
 
-  const generatePermutations = (elements, k) => {
-    const permutations = [];
+  // Función para generar permutaciones (algoritmo de permutación)
+  const generarPermutacionesHelper = (elementos, k) => {
+    const permutaciones = [];
 
+    // Función recursiva para encontrar las permutaciones
     const backtrack = (current = []) => {
       if (current.length === k) {
-        permutations.push([...current]);
+        permutaciones.push([...current]);
         return;
       }
 
-      for (let i = 0; i < elements.length; i++) {
-        if (!current.includes(elements[i])) {
-          current.push(elements[i]);
+      for (let i = 0; i < elementos.length; i++) {
+        if (!current.includes(elementos[i])) {
+          current.push(elementos[i]);
           backtrack(current);
           current.pop();
         }
@@ -90,7 +102,7 @@ function Combinaciones() {
     };
 
     backtrack();
-    return permutations;
+    return permutaciones;
   };
 
   return (
@@ -120,45 +132,52 @@ function Combinaciones() {
         />
       </Box>
       <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-        <Button variant="contained" onClick={generarCombinaciones} sx={{ mr: 1 , backgroundColor:"#333" }}>
+        <Button variant="contained" onClick={generarCombinaciones} sx={{ mr: 4 , backgroundColor:"#333" }}>
           Combinaciones
         </Button>
-        <Button variant="contained" onClick={generarPermutaciones} sx={{ mr: 1,  backgroundColor:"#333"}}>
+        <Button variant="contained" onClick={generarPermutaciones} sx={{ mr: 4,  backgroundColor:"#333"}}>
           Permutaciones
         </Button>
       </Box>
       {combinaciones.length > 0 && (
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="h5" color="textPrimary" align="center" gutterBottom>
-            Combinaciones ({combinaciones.length})
-          </Typography>
-          <Typography variant="body2" align="center">
-            {combinaciones.map((combination, index) => (
-              <span key={index}>({combination.join(', ')}) </span>
-            ))}
-          </Typography>
-        </Box>
+        <Card variant="outlined" sx={{ mb: 4, border: "1px solid #333" }} xs={12} md={12}>
+          <CardContent>
+            <Typography variant="h5" color="textPrimary" align="center" gutterBottom>
+              Combinaciones ({combinaciones.length})
+            </Typography>
+            <Typography variant="body2" align="center">
+              Fórmula para calcular combinaciones: <br />
+              <strong>C(n, k) = n! / (k! * (n - k)!)</strong>
+            </Typography>
+            <p></p>
+            <Typography variant="body2" align="center">
+              {combinaciones.map((combination, index) => (
+                <span key={index}>({combination.join(', ')}) </span>
+              ))}
+            </Typography>
+          </CardContent>
+        </Card>
       )}
       {permutaciones.length > 0 && (
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="h5" color="textPrimary" align="center" gutterBottom>
-            Permutaciones ({permutaciones.length})
-          </Typography>
-          <Typography variant="body2" align="center">
-            {permutaciones.map((permutation, index) => (
-              <span key={index}>({permutation.join(', ')}) </span>
-            ))}
-          </Typography>
-        </Box>
+        <Card variant="outlined" sx={{ mb: 4, border: "1px solid #333" }} xs={12} md={12}>
+          <CardContent>
+            <Typography variant="h5" color="textPrimary" align="center" gutterBottom>
+              Permutaciones ({permutaciones.length})
+            </Typography>
+            <Typography variant="body2" align="center">
+              Fórmula para calcular permutaciones: <br />
+              <strong>P(n, k) = n! / (n - k)!</strong>
+            </Typography>
+            <p></p>
+            <Typography variant="body2" align="center">
+              {permutaciones.map((permutation, index) => (
+                <span key={index}>({permutation.join(', ')}) </span>
+              ))}
+            </Typography>
+          </CardContent>
+        </Card>
       )}
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-        <Typography variant="h6" align="center" gutterBottom>
-          En construcción...
-        </Typography>
-        <img src="https://pbs.twimg.com/media/ChFN_m1VEAEp8af.jpg" alt="a" style={{ maxWidth: '50%', height: 'auto' }} />
-      </Box>
-    </Container>
-     
+    </Container> 
   );
 }
 
