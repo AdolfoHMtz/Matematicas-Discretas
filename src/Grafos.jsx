@@ -1,130 +1,227 @@
-import React, { useRef, useState, useEffect } from 'react';
-import './Grafos.css'; // Estilos del componente
+import { Grid, Button, Box, Typography } from "@mui/material";
+import { useState, useRef } from "react";
+import Cytoscape from "cytoscape";
+import CytoscapeComponent from "react-cytoscapejs";
+import edgehandles from "cytoscape-edgehandles";
 
-const Grafos = () => {
-  const canvasRef = useRef(null); // Referencia al elemento canvas
-  const [tool, setTool] = useState('vertex'); // Herramienta seleccionada: 'vertex', 'edge', 'arrow', 'loop'
-  const [vertices, setVertices] = useState([]); // Lista de vértices en el grafo
-  const [edges, setEdges] = useState([]); // Lista de aristas en el grafo
-  const [arrows, setArrows] = useState([]); // Lista de flechas en el grafo
-  const [loops, setLoops] = useState([]); // Lista de lazos en el grafo
-  const [selectedVertex, setSelectedVertex] = useState(null); // Vértice seleccionado para dibujar arista
-  const [vertexCounter, setVertexCounter] = useState(65); // Contador para generar letras del abecedario
+function Grafos() {
+  const [mode, setMode] = useState("Añadir Vértice");
+  const [adjMatrix, setAdjMatrix] = useState([]);
+  const [showMatrix, setShowMatrix] = useState(false);
+  const [showDegrees, setShowDegrees] = useState(false);
+  const [degrees, setDegrees] = useState({});
+  const cyRef = useRef(null);
 
-  // Función para manejar los clics en el lienzo
-  const handleCanvasClick = (event) => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left; // Posición x del clic
-    const y = event.clientY - rect.top; // Posición y del clic
+  Cytoscape.use(edgehandles);
 
-    // Implementar lógica para cada herramienta
-    switch (tool) {
-      case 'vertex':
-        setVertices([...vertices, { x, y, label: String.fromCharCode(vertexCounter) }]); // Agregar un nuevo vértice a la lista con una letra del abecedario
-        setVertexCounter(vertexCounter + 1); // Incrementar el contador de letras
-        break;
-      case 'edge':
-        if (selectedVertex) {
-          setEdges([...edges, { start: selectedVertex, end: { x, y } }]); // Agregar una nueva arista
-          setSelectedVertex(null); // Reiniciar el vértice seleccionado
+  const handleOption = (option) => {
+    setMode(option);
+    setShowMatrix(false);
+    setShowDegrees(false);
+  };
+
+  const handleShowMatrix = () => {
+    const cy = cyRef.current;
+    const nodes = cy.nodes();
+    const edges = cy.edges();
+
+    const matrix = Array(nodes.length)
+      .fill(null)
+      .map(() => Array(nodes.length).fill(0));
+
+    nodes.forEach((node, i) => {
+      nodes.forEach((targetNode, j) => {
+        if (node.id() === targetNode.id()) {
+          const loop = edges.filter(
+            (edge) => edge.source().id() === node.id() && edge.target().id() === node.id()
+          );
+          if (loop.length > 0) {
+            matrix[i][j] = 1;
+          }
         } else {
-          setSelectedVertex({ x, y }); // Seleccionar el primer vértice para dibujar la arista
+          const edgeAB = edges.filter(
+            (edge) =>
+              edge.source().id() === node.id() && edge.target().id() === targetNode.id()
+          );
+          const edgeBA = edges.filter(
+            (edge) =>
+              edge.source().id() === targetNode.id() && edge.target().id() === node.id()
+          );
+          if (edgeAB.length > 0 || edgeBA.length > 0) {
+            matrix[i][j] = 1;
+          }
         }
-        break;
-      case 'arrow':
-        if (selectedVertex) {
-          setArrows([...arrows, { start: selectedVertex, end: { x, y } }]); // Agregar una nueva flecha
-          setSelectedVertex(null); // Reiniciar el vértice seleccionado
-        } else {
-          setSelectedVertex({ x, y }); // Seleccionar el punto de partida para dibujar la flecha
-        }
-        break;
-      case 'loop':
-        setLoops([...loops, { x, y }]); // Agregar un nuevo lazo al vértice seleccionado
-        break;
-      default:
-        break;
-    }
+      });
+    });
+
+    setAdjMatrix(matrix);
+    setShowMatrix(true);
   };
 
-  // Función para dibujar el grafo en el lienzo
-  const drawGraph = () => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
+  const handleShowDegrees = () => {
+    const cy = cyRef.current;
+    const nodes = cy.nodes();
 
-    // Limpiar el lienzo antes de dibujar
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Dibujar las aristas
-    ctx.strokeStyle = 'black';
-    ctx.lineWidth = 2;
-    edges.forEach(({ start, end }) => {
-      ctx.beginPath();
-      ctx.moveTo(start.x, start.y);
-      ctx.lineTo(end.x, end.y);
-      ctx.stroke();
+    const nodeDegrees = {};
+    nodes.forEach((node) => {
+      nodeDegrees[node.data('label')] = node.degree();
     });
 
-    // Dibujar las flechas
-    ctx.fillStyle = 'black';
-    arrows.forEach(({ start, end }) => {
-      const dx = end.x - start.x;
-      const dy = end.y - start.y;
-      const angle = Math.atan2(dy, dx);
-      const length = Math.sqrt(dx * dx + dy * dy);
-      ctx.beginPath();
-      ctx.moveTo(start.x, start.y);
-      ctx.lineTo(end.x, end.y);
-      ctx.lineTo(end.x - 10 * Math.cos(angle - Math.PI / 6), end.y - 10 * Math.sin(angle - Math.PI / 6));
-      ctx.moveTo(end.x, end.y);
-      ctx.lineTo(end.x - 10 * Math.cos(angle + Math.PI / 6), end.y - 10 * Math.sin(angle + Math.PI / 6));
-      ctx.stroke();
-      ctx.fill();
-    });
-
-    // Dibujar los vértices
-    ctx.fillStyle = 'blue';
-    vertices.forEach(({ x, y, label }) => {
-      ctx.beginPath();
-      ctx.arc(x, y, 5, 0, 2 * Math.PI);
-      ctx.fill();
-      ctx.font = '12px Arial';
-      ctx.fillText(label, x + 7, y + 5); // Dibujar la letra del vértice
-    });
-
-    // Dibujar los lazos
-    ctx.strokeStyle = 'black';
-    ctx.lineWidth = 2;
-    loops.forEach(({ x, y }) => {
-      ctx.beginPath();
-      ctx.arc(x, y, 20, 0, 2 * Math.PI);
-      ctx.stroke();
-    });
+    setDegrees(nodeDegrees);
+    setShowDegrees(true);
   };
 
-  // UseEffect para dibujar el grafo cada vez que cambien los vértices
-  useEffect(() => {
-    drawGraph();
-  }, [vertices, edges, arrows, loops]);
-
-  // Función para cambiar la herramienta seleccionada
-  const selectTool = (selectedTool) => {
-    setTool(selectedTool);
-  };
+  let charVar = 0;
+  const options = ["Añadir Vértice", "Añadir Arista", "Añadir Bucle"];
 
   return (
-    <div className="grafo-container">
-      <canvas ref={canvasRef} className="grafo-canvas" onClick={handleCanvasClick} width={800} height={600}></canvas>
-      <div className="grafo-tools">
-        <button onClick={() => selectTool('vertex')}>Agregar Vértices</button>
-        <button onClick={() => selectTool('edge')}>Dibujar Aristas</button>
-        <button onClick={() => selectTool('arrow')}>Dibujar Flechas</button>
-        <button onClick={() => selectTool('loop')}>Agregar Lazos</button>
-      </div>
-    </div>
+    <>
+      <Box sx={{ display: "flex", justifyContent: "center", marginTop: 5 }}>
+        <Box sx={{ width: "80%", height: "700px", background: "white", border: "1px solid grey" }}>
+          <CytoscapeComponent
+            elements={[]}
+            style={{ width: "100%", height: "100%" }}
+            cy={(cy) => {
+              cyRef.current = cy; // Save the reference to the cytoscape instance
+              let defaults = {
+                canConnect: function (sourceNode, targetNode) {
+                  return !sourceNode.same(targetNode);
+                },
+                edgeParams: function (sourceNode, targetNode) {
+                  return {};
+                },
+                hoverDelay: 150,
+                snap: true,
+                snapThreshold: 50,
+                snapFrequency: 15,
+                noEdgeEventsInDraw: true,
+                disableBrowserGestures: true,
+              };
+
+              let eh = cy.edgehandles(defaults);
+
+              if (mode === "Añadir Arista") {
+                eh.enableDrawMode();
+              } else {
+                eh.disableDrawMode();
+                eh.disable();
+                eh.destroy();
+                cy.autolock(false);
+                cy.autoungrabify(false);
+              }
+
+              cy.on("tap", (e) => {
+                if (e.target === cy && mode === "Añadir Vértice") {
+                  let posX = e.position.x;
+                  let posY = e.position.y;
+
+                  cy.add({
+                    data: {
+                      id: charVar.toString(),
+                      label: String.fromCharCode(65 + charVar),
+                    },
+                    position: { x: posX, y: posY },
+                  });
+
+                  charVar++;
+                }
+              });
+
+              cy.on("dblclick", "node", (e) => {
+                if (mode === "Añadir Bucle") {
+                  const node = e.target;
+                  cy.add({
+                    data: {
+                      id: `edge-${node.id()}`,
+                      source: node.id(),
+                      target: node.id(),
+                    },
+                  });
+                }
+              });
+            }}
+          />
+        </Box>
+      </Box>
+      <Box sx={{ textAlign: "center", marginBottom: 5, marginTop: 3 }}>
+        <Grid container justifyContent="center" spacing={2}>
+          {options.map((opt, index) => (
+            <Grid item key={index}>
+              <Button variant="contained" sx={{ backgroundColor: "#333", color: "#fff" }} onClick={() => handleOption(opt)}>
+                {opt}
+              </Button>
+            </Grid>
+          ))}
+          <Grid item>
+            <Button variant="contained" sx={{ backgroundColor: "#333", color: "#fff" }} onClick={handleShowMatrix}>
+              Matriz de Adyacencia
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button variant="contained" sx={{ backgroundColor: "#333", color: "#fff" }} onClick={handleShowDegrees}>
+              Ver Grados
+            </Button>
+          </Grid>
+        </Grid>
+      </Box>
+      {showMatrix && (
+        <Box sx={{ textAlign: "center", marginTop: 3 }}>
+          <Typography variant="h6">Matriz de Adyacencia</Typography>
+          <Box component="table" sx={{ margin: "0 auto", borderCollapse: "collapse" }}>
+            <Box component="thead">
+              <Box component="tr">
+                <Box component="th" sx={{ border: "1px solid black", padding: "5px" }}></Box>
+                {adjMatrix.map((_, index) => (
+                  <Box component="th" sx={{ border: "1px solid black", padding: "5px" }} key={index}>
+                    {String.fromCharCode(65 + index)}
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+            <Box component="tbody">
+              {adjMatrix.map((row, rowIndex) => (
+                <Box component="tr" key={rowIndex}>
+                  <Box component="th" sx={{ border: "1px solid black", padding: "5px" }}>
+                    {String.fromCharCode(65 + rowIndex)}
+                  </Box>
+                  {row.map((cell, cellIndex) => (
+                    <Box component="td" sx={{ border: "1px solid black", padding: "5px" }} key={cellIndex}>
+                      {cell}
+                    </Box>
+                  ))}
+                </Box>
+              ))}
+            </Box>
+          </Box>
+        </Box>
+      )}
+      {showDegrees && (
+        <Box sx={{ textAlign: "center", marginTop: 3 }}>
+          <Typography variant="h6">Grados de los Vértices</Typography>
+          <Box component="table" sx={{ margin: "0 auto", borderCollapse: "collapse" }}>
+            <Box component="thead">
+              <Box component="tr">
+                <Box component="th" sx={{ border: "1px solid black", padding: "5px" }}>Vértice</Box>
+                <Box component="th" sx={{ border: "1px solid black", padding: "5px" }}>Grado</Box>
+              </Box>
+            </Box>
+            <Box component="tbody">
+              {Object.entries(degrees).map(([node, degree]) => (
+                <Box component="tr" key={node}>
+                  <Box component="td" sx={{ border: "1px solid black", padding: "5px" }}>
+                    {node}
+                  </Box>
+                  <Box component="td" sx={{ border: "1px solid black", padding: "5px" }}>
+                    {degree}
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+          </Box>
+        </Box>
+      )}
+    </>
   );
-};
+}
 
 export default Grafos;
